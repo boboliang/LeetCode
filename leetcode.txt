@@ -1,0 +1,792 @@
+*****1. TWO SUM*****
+
+    vector<int> twoSum(vector<int> &numbers, int target) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<int> result(2,0);
+        map<int,int> mapToIndex;
+        
+        int size = numbers.size();
+        
+        for(int i = 0; i < size; ++i){
+            int cur = numbers[i];
+            int dif = target - cur;//<<<<<--------------------------
+            if(mapToIndex[cur] > 0){
+                result[0] = mapToIndex[cur];
+                result[1] = i+1;
+                return result;
+            
+            }
+            else
+                mapToIndex[dif] = i+1;
+        }
+        return result;
+    }
+
+
+*****2. ADD TWO NUMBERS*****
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        ListNode* result = new ListNode(0);
+        ListNode * cur = result;
+        int carry = 0;
+        
+        while(l1 || l2 || carry){
+            int num1 = l1 == NULL? 0 : l1->val;<<<<<--------------------------
+            int num2 = l2 == NULL? 0 : l2->val;
+            int sum = num1 + num2 + carry;
+            
+            carry = sum/10;
+            sum = sum%10;
+            
+            cur->next = new ListNode(sum);
+            cur = cur->next;
+            
+            l1= l1 == NULL? NULL :l1->next;<<<<<--------------------------
+            l2= l2 == NULL? NULL :l2->next;
+            
+        }
+        return result->next;
+    }
+};
+
+*****3. STRING TO INTEGER(ATOI)*****
+
+    int atoi(const char *str) {
+        if (str == NULL)
+            return 0;
+        while (*str == ' ')
+            str++;
+        int sign = 1;
+        if(*str == '-')
+        {
+            sign = -1;
+            str++;
+        }
+        if(*str == '+')
+            str++;
+        long long  res = 0;//<<<<<--------------------------
+        while (*str != '\0')
+        {
+            if (isdigit(*str))//<<<<<-----------------------
+            {
+                res = res*10 + (*str - '0');
+                if (sign*res >INT_MAX)
+                    return INT_MAX;
+                else if (sign*res < INT_MIN)
+                    return INT_MIN;
+            }
+            else
+                break;
+            str++;
+        }
+    return sign*res;
+    }
+
+*****4. INTEGER TO ROMAN *****
+public:
+    string intToRoman(int num) {
+        const static char* Roman = "IVXLCDM";
+        string ret;
+        for (int base = 0; num; num /= 10, base += 2) {  //<<<<<--------------------------
+            int x = num % 10;
+            switch (x) {
+                case 1: case 2: case 3:
+                    ret = string(x, Roman[base]) + ret;
+                    break;
+                case 4:
+                    ret = Roman[base+1] + ret;
+                    ret = Roman[base] + ret;
+                    break;
+                case 5:
+                    ret = Roman[base+1] + ret;
+                    break;
+                case 6: case 7: case 8:
+                    ret = string(x-5, Roman[base]) + ret;
+                    ret = Roman[base+1] + ret;
+                    break;
+                case 9:
+                    ret = Roman[base+2] + ret;
+                    ret = Roman[base] + ret;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return ret;
+    }
+
+***** 5. ROMAN TO INTEGER *****
+    int romanToInt(string s) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if(s.length() == 0) return 0;
+        
+        map<char, int> m;
+        
+        m['I'] = 1;
+        m['V'] = 5;
+        m['X'] = 10;
+        m['L'] = 50;
+        m['C'] = 100;
+        m['D'] = 500;
+        m['M'] = 1000;
+        
+        int n = s.length();
+        int sum = m[s[n-1]];
+        
+        for(int i = n-2; i >= 0; i--){
+            if(m[s[i+1]] > m[s[i]])
+                sum -= m[s[i]];
+            else
+                sum += m[s[i]];   
+        }
+        return sum;
+    }
+
+*****6. 3 SUM *****
+
+vector<vector<int> > threeSum(vector<int> arr) {
+    sort(arr.begin(), arr.end());//<<<<<--------------------------
+    set<vector<int> > triplets;
+    vector<int> triplet(3);
+    vector<vector<int>> result;
+
+    int n = arr.size();
+    for (int i = 0;i < n; i++) {
+        int j = i + 1;
+        int k = n - 1;
+        while (j < k) {
+            int sum_two = arr[i] + arr[j];
+            if (sum_two + arr[k] < 0) {//<<<<<--------------------------
+                j++;
+            } else if (sum_two + arr[k] > 0) {
+                k--;
+            } else {
+                triplet[0] = arr[i];
+                triplet[1] = arr[j];
+                triplet[2] = arr[k];
+                triplets.insert(triplet);
+                j++;
+                k--;
+            }
+        }
+    }
+
+    for(set<vector<int>>::iterator it = triplets.begin(); it != triplets.end(); ++it)
+	result.push_back(*it);
+    return result;
+}
+
+***** 7. VALID PARENTHESES *****
+bool isValid(string s) 
+  {
+    // Start typing your C/C++ solution below
+    // DO NOT write int main() function
+    int n = s.size();
+    stack<char> st;//<<<<<--------------------------
+    for( int i=0;i<n;i++)
+    {
+        char tmp = s[i];
+        if( tmp == ')')
+                {
+                    if( !st.empty() && st.top() == '(')
+                        st.pop();
+                    else 
+                        return false;
+                }
+        else if( tmp == ']')
+                {
+                    if( !st.empty() && st.top() == '[')
+                        st.pop();
+                    else 
+                        return false;
+                }
+        else if( tmp == '}')
+                {
+                    if( !st.empty() && st.top() == '{')
+                        st.pop();
+                    else 
+                        return false;
+                }
+        else
+            st.push(s[i]);
+    }
+    return st.empty() ? true:false;
+  }
+
+***** 8. MERGE TWO SORTED LISTS *****
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *mergeTwoLists(ListNode *l1, ListNode *l2) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        ListNode* pre = new ListNode(0);
+        ListNode* cur = pre;
+        
+        while(l1 != NULL && l2 != NULL)
+        {
+            if(l1->val <= l2->val){
+                cur->next = l1;
+                cur = l1;
+                l1 = l1->next;
+            }
+            else{
+                cur->next = l2;
+                cur = l2;
+                l2 = l2->next;
+            }
+        }
+        if(l1 == NULL) cur->next = l2;
+        if(l2 == NULL) cur->next = l1;
+        return pre->next;
+    }
+};
+
+***** 9. GENERATE PARENTHESIS *****
+class Solution {
+public:
+    void helper(vector<string>& result, int l, int r, string cur){
+        if(l == 0 && r == 0){
+            result.push_back(cur);
+            return;
+        }
+        
+        if(l > 0)
+            helper(result, l-1, r, cur+'(');
+        if(r > 0 && r > l)
+            helper(result, l, r-1, cur+')');
+    }
+    vector<string> generateParenthesis(int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<string> result;
+        helper(result, n, n, "");
+        return result;
+    }
+};
+***** 10. MERGE K SORTED LIST ***
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+
+    ListNode *mergeTwo(ListNode* l1, ListNode* l2){
+        ListNode* pre = new ListNode(0);
+        ListNode* cur = pre;
+        
+        while(l1 != NULL && l2 != NULL){
+            if(l1->val <= l2->val){
+                cur->next = l1;
+                cur = l1;
+                l1 = l1->next;
+            }
+            else{
+                cur->next = l2;
+                cur = l2;
+                l2 = l2->next;
+            }
+        }
+        if(l1 == NULL) cur->next = l2;
+        if(l2 == NULL) cur->next = l1;
+            
+        return pre->next;
+    }
+    ListNode *mergeKLists(vector<ListNode *> &lists) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        ListNode* result = NULL;
+        if(lists.size() == 0) return result;
+        if(lists.size() == 1) return lists[0];
+        result = lists[0];
+        for(int i = 1; i < lists.size(); ++i){
+            result = mergeTwo(result, lists[i]);
+        }
+        return result;
+    }
+};
+
+***** 11. SWAP NODES IN PAIRS *****
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *swapPairs(ListNode *head) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        ListNode* pre = new ListNode(0);
+        ListNode* cur = pre;
+        
+        cur->next = head;
+        ListNode* tmp = NULL;
+        
+        while(cur->next != NULL && cur->next->next != NULL){
+            tmp = cur->next;
+            cur->next = tmp->next;
+            tmp->next = cur->next->next;
+            cur->next->next = tmp;
+            
+            cur = tmp;
+        }
+        return pre->next;
+    }
+};
+
+*****12. REMOVE ELEMENT *****
+class Solution {
+public:
+    int removeElement(int A[], int n, int elem) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int len  = 0;
+        for(int i = 0; i < n; ++i){
+            if(A[i] != elem)
+                A[len++] = A[i];
+        }
+        return len;
+    }
+};
+*****13. IMPLEMENT STRSTR() *****//>>>>>>>>>>>>>>>>>>>>>>>
+class Solution {
+public:
+    char* strStr( char *str,  char *target) {
+        if (!*target) return str;
+        char *p1 = (char*)str, *p2 = (char*)target;
+        char *p1Adv = (char*)str;
+        while (*++p2)
+            p1Adv++;
+        while (*p1Adv) {
+            char *p1Begin = p1;
+            p2 = (char*)target;
+            while (*p1 && *p2 && *p1 == *p2) {
+                p1++;
+                p2++;
+            }
+            if (!*p2)
+                return p1Begin;
+            p1 = p1Begin + 1;
+            p1Adv++;
+        }
+        return NULL;
+    }   
+};
+
+*****14. PERMUTATIONS *****//>>>>>>>>>>>>>>>>>>>>>>>>>>>
+class Solution {
+public:
+    vector<vector<int> > permute(vector<int> &num) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<int>> result;
+        int N = num.size();
+        
+        if(N==0) return result;
+        if(num.size() == 1){
+            result.push_back(num);
+            return result;
+        }
+        
+        vector<int> cur;
+        vector<vector<int>> post;
+        
+        for(int i = 0; i < N; ++i){
+            cur = num;
+            cur.erase(cur.begin()+i);
+            post = permute(cur);
+            for(int j = 0; j < post.size(); ++j){
+                post[j].insert(post[j].begin(), num[i]);
+                result.push_back(post[j]);
+            }
+        }
+        
+        return result;
+    }
+};
+*****15.ANAGRAMS *****
+class Solution {
+public:
+    vector<string> anagrams(vector<string> &strs) {
+        vector<string> res;
+        if (strs.size() <= 1) return res;
+        map<string, int> anagram;
+        for (int i = 0; i < strs.size(); ++i)
+        {
+            string s = strs[i];
+            sort(s.begin(), s.end());//<<<<<<<<-------------------
+            if (anagram.find(s) == anagram.end()) {
+                anagram.insert(make_pair(s, i));
+            } else {
+                if (anagram[s] >= 0) {
+                    res.push_back(strs[anagram[s]]);
+                    anagram[s] = -1;
+                }
+                res.push_back(strs[i]);
+            }
+        }
+        return res;
+    }
+};
+
+*****16. POW(X,N) *****
+class Solution {
+public:
+    double power(double x, int n){
+        if( n == 0 ){
+            return 1.0;
+        }
+        double half = power(x, n/2);
+        
+        if(n % 2 == 0){
+            return half * half;
+        }
+        else
+            return half * half * x;
+    }
+    double pow(double x, int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if( n < 0)
+            return 1.0/power(x, n);
+        else
+            return power(x, n);
+    }
+};
+*****17. MERGE INTERVALS *****
+/**
+ * Definition for an interval. 
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */`
+class Solution {
+public:
+    static bool compare(const Interval &t1,const Interval &t2){  
+        return t1.start < t2.start;  
+    }
+    vector<Interval> merge(vector<Interval> &intervals) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<Interval> result;
+        if(intervals.size() == 0)
+            return result;
+        sort(intervals.begin(),intervals.end(),Solution::compare);
+        int start = intervals[0].start, end = intervals[0].end;
+        for(int i = 1; i < intervals.size(); ++i){
+            if(intervals[i].start > end){
+                result.push_back(Interval(start,end));
+                start = intervals[i].start;
+                end = intervals[i].end;
+            }
+            else{
+                end = max(end,intervals[i].end);
+            }
+        }
+        result.push_back(Interval(start,end));
+        return result;
+    }
+};
+
+*****18. INSERT INTERVAL *****
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval> &intervals, Interval newInterval) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<Interval>::iterator it = intervals.begin();
+        while(it != intervals.end()){
+            if(it->end < newInterval.start){
+                it++;
+                continue;
+            }
+            if(it->start > newInterval.end){
+                intervals.insert(it,newInterval);
+                return intervals;
+            }
+            else{
+                newInterval.start = min(it->start, newInterval.start);
+                newInterval.end = max(it->end, newInterval.end);
+                it = intervals.erase(it);
+            }
+        }
+        intervals.push_back(newInterval);
+        return intervals;
+    }
+};
+
+*****19. ADDBINARY *****
+class Solution {
+public:
+    string addBinary(string a, string b) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int al = a.length();
+        int bl = b.length();
+        string result = al > bl? a : b;
+        int carry = 0;
+    
+        for(int i = 0; i < result.length(); ++i){
+            char num1 = i < al ? a[al-i-1] : '0';
+            char num2 = i < bl ? b[bl-i-1] : '0';
+            
+            int sum = (num1 - '0') + (num2 - '0') + carry;
+            
+            carry = sum/2;
+            sum %= 2;
+            
+            result[result.length()-i-1] = char(sum + '0');
+        }
+        if(carry)
+            result = "1" + result;
+        return result;
+    }
+};
+*****20. CLIMBING STAIRS*****
+class Solution {
+public:
+    int climbStairs(int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (n <= 2)
+            return n;
+        
+        int s1 = 1, s2 = 2, s;      //s1 is only one steps, s2 is when having 2 steps 
+        
+        for (int i = 3; i <=n; ++i) {
+            s = s1 + s2;            //fn = f(n-1) + f(n-2)
+            
+            s1 = s2;
+            s2 = s;
+        }
+        
+        return s;
+    }
+};
+
+*****21. SET MATRIX ZEROS *****
+class Solution {
+public:
+    void setZeroes(vector<vector<int> > &matrix) {
+    // Start typing your C/C++ solution below
+    // DO NOT write int main() function
+        bool firstRow = false, firstCol = false;
+        int m = matrix.size();
+        int n = matrix[0].size();
+        
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(matrix[i][j] == 0){
+                    if(i == 0) firstRow = true;
+                    if(j == 0) firstCol = true;
+                    matrix[0][j] = 0;
+                    matrix[i][0] = 0;
+                }
+            }
+        }
+        
+        for(int p = 1; p < m; ++p){
+            for(int q = 1; q < n; ++q){
+                if(matrix[p][0] == 0 || matrix[0][q] == 0){
+                    matrix[p][q] = 0;
+                }
+            }
+        }
+        
+        if(firstRow == true){
+            for(int k = 0; k < n; ++k){
+                matrix[0][k] = 0;
+            }
+        }
+        if(firstCol == true){
+            for(int k = 0; k < m; ++k){
+                matrix[k][0] = 0;
+            }
+        }
+    }
+};
+
+***** 22. COMBINATIONS *****
+class Solution {
+public:
+    void combines(vector<vector<int>> &result, vector<int> &output, int n, int k, int cur){
+        //if(cur > n +1 ) 
+            //return;
+        if(output.size() == k)
+            result.push_back(output);
+        for(int i = cur; i <= n; ++i){
+            output.push_back(i);
+            combines(result, output, n, k, i+1);
+            output.pop_back();
+        }
+    }
+
+    vector<vector<int> > combine(int n, int k) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<int>> result;
+        vector<int> output;
+        combines(result, output, n, k, 1);
+        
+        return result;
+    }
+};
+
+*****23. SUBSETS *****
+class Solution {
+public:
+    void getSubsets(vector<vector<int>> &result, vector<int> &S, vector<int> &output, int level){
+
+        for(int i = level; i < S.size(); ++i){
+            output.push_back(S[i]);
+            result.push_back(output);
+            getSubsets(result, S, output, i + 1);
+            output.pop_back();
+        }
+    }
+
+    vector<vector<int> > subsets(vector<int> &S) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        sort(S.begin(), S.end());
+        vector<vector<int>> result;
+        vector<int> output;
+        result.push_back(output);
+        getSubsets(result, S, output, 0);
+        return result;
+    }
+};
+
+***** 24. MERGE SORTED ARRAY *****
+class Solution {
+public:
+    void merge(int A[], int m, int B[], int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int ia = m-1, ib = n-1, icur = m+n-1;
+        while(ia >= 0 && ib >= 0){
+            A[icur--] = A[ia] > B[ib]?A[ia--]:B[ib--];
+        }
+        while(ib >= 0){
+            A[icur--] = B[ib--];
+        }
+    }
+};
+***** 25. DECODE WAYS *****
+class Solution {
+public:
+    int numDecodings(string s) {
+        // Start typing your C/C ++ solution below
+        // DO NOT write int main() function
+        //f(n) = f(n-1) + f(n-2) when s[n] is valid and s[n-1]s[n] is also valid
+        //f(n) = f(n-1) when only s[n] is valid
+        //f(n) = 0  when s[n] = 0;
+        if(s.size() == 0)
+            return 0;
+        vector<int> ways(s.size() + 1, 1);
+        
+        for(int i = s.size() -1; i >= 0; --i){
+            if(s[i] == '0')
+                ways[i] = 0;
+            else 
+                ways[i] = ways[i+1];
+            
+            if(i+1 < s.size() && (s[i] == '1' ||(s[i] == '2' && s[i+1] <= '6'))){
+                ways[i] += ways[i+2];
+            }
+        }
+        return ways[0];
+    }
+};
+***** 26. Unique Paths *****
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        // dp: max[m][n] = max[m-1][n] + max[m][n-1];
+        
+        vector<int> max(n, 0);
+        max[0] = 1;
+        for(int i = 0; i < m; ++i){
+            for(int j = 1; j < n; ++j){
+                max[j] = max[j-1] + max[j];
+            }
+        }
+        return max[n-1];
+    }
+};
+
+***** 27. VAlIDATE BINARY SEARCH TREE *****
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isValidBST(TreeNode *root) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int max = INT_MAX;
+        int min = INT_MIN;
+        return validate(root, max, min);
+    }
+    bool validate(TreeNode* root, int max, int min){
+        if(!root)
+            return true;
+        if(root->val >= max || root->val <= min)
+            return false;
+        return validate(root->left, root->val, min) &&
+                validate(root->right, max, root->val);
+    }
+};
+
+
+
