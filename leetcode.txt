@@ -403,7 +403,7 @@ public:
     }   
 };
 
-*****14. PERMUTATIONS *****//>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*****14. PERMUTATIONS ****/////>>>>>>>>>>>>>>>>>>>>>>>>>>>
 class Solution {
 public:
     vector<vector<int> > permute(vector<int> &num) {
@@ -824,5 +824,285 @@ public:
     }
 };
 
+*****29. SUM ROOT TO LEAF NUMBERS *****
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int sumNumbers(TreeNode *root) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        return helper(root, 0);
+    }
+    
+    int helper(TreeNode* root, int sum){
+        if(!root)
+            return 0;
+        sum = sum*10 + root->val;
+        
+        if(!root->left && !root->right)
+            return sum;
+        return helper(root->left, sum) + helper(root->right, sum);
 
+    }
+};
+
+*****30. VALID PALINDROME *****
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if(s.length() == 0)
+            return true;
+        int start = 0;
+        int end = s.length() -1 ;
+        while(start < end){
+            if((s[start] >= 'a' && s[start] <= 'z') || (s[start] >= 'A' && s[start] <= 'Z') || (s[start] >= '0' && s[start] <= '9')){
+                if((s[end] >= 'a' && s[end] <= 'z') || (s[end] >= 'A' && s[end] <= 'Z') || (s[end] >= '0' && s[end] <= '9')){
+                    if(tolower(s[start]) == tolower(s[end])){
+                        start++;
+                        end--;
+                    }
+                    else
+                        return false;
+                }
+                else
+                    end--;
+            }
+            else
+                start++;
+        }
+        return true;
+    }
+};
+
+***** 31. BINARY TREE LEVEL ORDER TRAVERSAL *****
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int> > levelOrder(TreeNode *root) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        //DFS
+        vector<vector<int>> result;
+        DFS(root, 0, result);
+        return result;
+    }
+    
+    void DFS(TreeNode* root, int level, vector<vector<int>>& result){
+        if(!root)
+            return;
+        if(result.size() == level){
+            vector<int> newLevel;
+            newLevel.push_back(root->val);
+            result.push_back(newLevel);
+        }
+        else
+            result[level].push_back(root->val);
+        DFS(root->left, level+1, result);
+        DFS(root->right, level+1, result);
+    }
+};
+
+///BFS
+
+
+***** 32. REMOVE DUPLICATES FROM SORTED ARRAY *****
+class Solution {
+public:
+    int removeDuplicates(int A[], int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if(n == 0) return 0;
+        
+        int pre = 0;
+        for(int cur = 1; cur < n; cur++){
+            if(A[cur] == A[pre])
+                continue;
+            pre++;
+            A[pre] = A[cur];
+        }
+        return pre+1;
+    }
+};
+
+***** 33. CONVERT SORTED ARRAY TO BINARY SEARCH TREE *****
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode *sortedArrayToBST(vector<int> &num) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        return buildTree(num, 0, num.size()-1);
+    }
+    TreeNode* buildTree(vector<int>& num,int start, int end){
+        if(start > end)
+            return NULL;
+        int mid = (start + end)/2;
+        TreeNode* root = new TreeNode(num[mid]);
+        root->left = buildTree(num, start, mid-1);
+        root->right = buildTree(num, mid+1, end);
+        return root;
+    }
+};
+
+*****34. REVERSE INTEGER *****
+class Solution {
+public:
+    int reverse(int x) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if(x == 0)
+            return 0;
+        int result = 0;
+        while(x != 0){
+            result = result*10 + x%10;
+            x/=10;
+        }
+        return result;
+    }
+};
+
+*****35. REGULAR EXPRESSION MATCHING *****
+class Solution {
+public:
+    bool isMatch(const char *s, const char *p) {
+        assert( s && p);
+        if(*p=='\0') return *s=='\0';
+        
+        //when p+1 is *
+        if(*(p+1) != '*'){
+            assert(*p != '*');
+            return ((*s==*p) || (*p == '.' && *s!='\0' )) && isMatch(s+1, p+1);
+        }
+        
+        //when p+1 is not *
+        while((*s==*p) || (*p == '.' && *s!='\0' )){        //case a*a
+            if(isMatch(s, p+2))
+                return true;
+            s++;
+        }
+        return isMatch(s, p+2);                             //case a*b
+    }
+};
+
+*****36. LETTER COMBINATIONS OF A PHONE NUMBER *****
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        string trans[] = {"", " ", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        vector<string> result;
+        string output;
+        getCombination(trans, digits, result, output, 0);
+        return result;
+    }
+    
+    void getCombination(string trans[], string& digits, vector<string>& result, string& output, int index){
+        if(index == digits.size()){
+            result.push_back(output);
+            return;
+        }
+        
+        int curdigit = digits[index] - '0';
+        for(int i = 0; i < trans[curdigit].size(); ++i){
+            output.push_back(trans[curdigit][i]);
+            getCombination(trans, digits, result, output, index+1);
+            output.resize(output.size()-1);
+        }
+    }
+};
+
+***** 37. REMOVE NTH NODE FROM END OF LIST *****
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *removeNthFromEnd(ListNode *head, int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        ListNode *left = head, *right = head;
+        ListNode *tmp;
+        for(int i = 0; i < n; i++){
+            right = right->next;
+        }
+        if(!right){
+            delete head;
+            head = head->next;
+            return head;
+        }
+        while(right->next != NULL){
+            right = right->next;
+            left = left->next;
+        }
+        
+        tmp = left->next;
+        left->next = tmp->next;
+        delete tmp;
+        
+        return head;
+    }
+};
+
+***** 38. COMBINATION SUM *****
+class Solution {
+public:
+    vector<vector<int> > combinationSum(vector<int> &candidates, int target) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<int>> result;
+        vector<int> output;
+        sort(candidates.begin(), candidates.end());
+        helper(result, output, candidates, target, 0, 0);
+        return result;
+    }
+    
+    void helper(vector<vector<int>> &result, vector<int> &output, vector<int> &candidates, int target, int index, int sum){
+        if(sum == target){
+            result.push_back(output);
+            return;
+        }
+        if(sum > target)
+            return;
+        
+        for(int i = index; i < candidates.size(); ++i){
+            output.push_back(candidates[i]);
+            sum += candidates[i];
+            helper(result, output, candidates, target, i, sum);
+            output.pop_back();
+            sum -= candidates[i];
+        }
+    }
+};
 
